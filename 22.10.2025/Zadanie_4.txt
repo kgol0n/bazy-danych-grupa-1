@@ -1,0 +1,5 @@
+create table sprint(id_sprintu integer auto_increment primary key, numer_sprintu integer unsigned not null, data_rozpoczecia date not null, data_zakonczenia date not null);
+alter table zadanie add(sprint integer, foreign key(sprint) references sprint(id_sprintu) on delete set null);
+insert into sprint(numer_sprintu, data_rozpoczecia, data_zakonczenia) values (1, '2025-01-01', '2025-08-01');
+update zadanie set sprint = 1 where id_zadania = 1;
+update zadanie set sprint = 1 where id_zadania = 2;

@@ -1,0 +1,8 @@
+create table projekt(id_projektu integer auto_increment primary key, nazwa_projektu varchar(150) not null, data_rozpoczecia date not null, data_zakonczenia date);
+alter table projekt add (menadzer_projektu integer, foreign key(menadzer_projektu) references pracownik(id_pracownika));
+insert into projekt(nazwa_projektu, data_rozpoczecia, data_zakonczenia, menadzer_projektu) values ('Remont pomieszczenia socjalnego', '2020-10-15', '2020-11-10', 1);
+insert into projekt(nazwa_projektu, data_rozpoczecia, data_zakonczenia, menadzer_projektu) values ('Wykonanie sprawozdania finansowego', '2023-08-13', null, 2);
+alter table zadanie add(projekt integer, foreign key(projekt) references projekt(id_projektu) on delete cascade);
+update zadanie set projekt = '1' where id_zadania = 1;
+update zadanie set projekt = '2' where id_zadania = 3;
+update zadanie set projekt = '2' where id_zadania = 2;

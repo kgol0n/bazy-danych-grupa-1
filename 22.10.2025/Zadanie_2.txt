@@ -1,0 +1,7 @@
+create table zadanie(id_zadania integer auto_increment primary key, nazwa_zadania varchar(150) not null, priorytet enum('normalny', 'wysoki', 'niski'), opis text, pracownik int, foreign key(pracownik) references pracownik(id_pracownika) on delete set null);
+alter table zadanie alter priorytet set default 'normalny';
+insert into zadanie(nazwa_zadania, priorytet, pracownik) values ('Zakonserwować powierzchnię płaską', 'wysoki', 1);
+insert into zadanie(nazwa_zadania, priorytet, pracownik) values ('Zrobić kawę szefowi', 'wysoki', 3);
+insert into zadanie(nazwa_zadania, priorytet, pracownik) values ('Zrobić sprawozdanie finansowe', 'niski', 2);
+
+
