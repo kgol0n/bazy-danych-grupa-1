@@ -1,0 +1,80 @@
+# zadanie 1
+create table pracownik(
+    id_pracownika integer auto_increment not null primary key,
+    imie varchar(40) not null,
+    nazwisko varchar(60) not null,
+    data_urodzenia date not null
+);
+
+insert into pracownik(imie, nazwisko, data_urodzenia) values ('Jan', 'Kowalski', '1990-01-01');
+insert into pracownik(imie, nazwisko, data_urodzenia) values ('Adam', 'Nowak', '1979-04-16');
+insert into pracownik(imie, nazwisko, data_urodzenia) values ('Janina', 'Wisniewska', '1965-06-14');
+
+update pracownik set data_urodzenia='1959-07-14' where id_pracownika=3;
+
+# zadanie 2
+create table zadanie(
+    id_zadania integer auto_increment not null primary key,
+    nazwa_zadania varchar(150) not null,
+    priorytet enum('normalny', 'wysoki', 'niski') not null,
+    opis text,
+    pracownik integer,
+    foreign key(pracownik) references pracownik(id_pracownika) on delete set null
+);
+
+alter table zadanie alter priorytet set default 'normalny';
+insert into zadanie(nazwa_zadania, priorytet, pracownik) values ('Naprawa ekspresu w biurze', 'wysoki', 1);
+insert into zadanie(nazwa_zadania, priorytet, pracownik) values ('Sporzadzic sprawozdanie', 'normalny', 2);
+insert into zadanie(nazwa_zadania, priorytet, pracownik) values ('Rozliczyc sie z kontrahentem', 'niski', 3);
+
+# zadanie 3
+create table projekt(
+    id_projektu integer auto_increment not null primary key,
+    nazwa_projektu varchar(150) not null,
+    data_rozpoczecia date not null,
+    data_zakonczenia date
+);
+
+alter table projekt add(menadzer_projektu integer not null, foreign key(menadzer_projektu) references pracownik (id_pracownika));
+insert into projekt(nazwa_projektu, data_rozpoczecia, data_zakonczenia, menadzer_projektu) values ('Poprawa warunkow w biurze', '2020-01-14', '2022-01-14', 1);
+insert into projekt(nazwa_projektu, data_rozpoczecia, data_zakonczenia, menadzer_projektu) values ('Rozliczenia finansowe', '2022-05-21', '2022-07-01', 3);
+
+alter table zadanie add(projekt integer, foreign key(projekt) references projekt(id_projektu) on delete cascade);
+update zadanie set projekt=1 where id_zadania=1;
+update zadanie set projekt=2 where id_zadania=2;
+update zadanie set projekt=1 where id_zadania=3;
+
+# zadanie 4
+create table sprint(
+    id_sprintu integer auto_increment not null primary key,
+    numer_sprintu integer unsigned not null,
+    data_rozpoczecia date not null,
+    data_zakonczenia date not null
+);
+alter table zadanie add(sprint integer, foreign key(sprint) references sprint(id_sprintu) on delete set null);
+insert into sprint(numer_sprintu, data_rozpoczecia, data_zakonczenia) values (1, '2025-01-01', '2025-01-07');
+update zadanie set sprint=1 where id_zadania=2;
+update zadanie set sprint=1 where id_zadania=3;
+
+# zadanie 5
+create table status(
+    id_statusu integer auto_increment primary key not null,
+    nazwa_statusu varchar(20) not null
+);
+insert into status(nazwa_statusu) values('w trakcie');
+insert into status(nazwa_statusu) values('zrealizowane');
+insert into status(nazwa_statusu) values('planowane');
+create table zadanie_has_status(
+    id_zdarzenia integer auto_increment primary key not null,
+    id_zadania integer not null, foreign key(id_zadania) references zadanie(id_zadania) on delete cascade,
+    id_statusu integer not null, foreign key(id_statusu) references status(id_statusu),
+    data_zdarzenia timestamp not null
+);
+insert into zadanie_has_status(id_zadania, id_statusu, data_zdarzenia) values (1, 2, '2026-01-01 00:00:00');
+insert into zadanie_has_status(id_zadania, id_statusu, data_zdarzenia) values (2, 2, '2026-01-01 00:00:00');
+insert into zadanie_has_status(id_zadania, id_statusu, data_zdarzenia) values (3, 2, '2026-01-01 00:00:00');
+
+delete from projekt where id_projektu=2;
+alter table zadanie drop foreign key zadanie_ibfk_3;
+drop table sprint;
+
