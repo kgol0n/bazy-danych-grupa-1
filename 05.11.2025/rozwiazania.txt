@@ -1,0 +1,20 @@
+# zadanie 1
+create table CLIENT as select * from company_2025.CLIENT;
+create table io_golonk.ORDER as select * from company_2025.ORDER; # zamiast io_golonk.ORDER `ORDER`
+create table EMPLOYEE as select * from company_2025.EMPLOYEE;
+select * from io_golonk.ORDER;
+select * from io_golonk.ORDER where ORDER_STATUS = 5;
+select ORDER_ID, ORDER_STATUS from io_golonk.ORDER where CLIENT_ID IN (1,3,5);
+
+# zadanie 2
+select * from io_golonk.EMPLOYEE where FIRST_NAME = "Agnieszka" and pensja = 3900;
+select * from io_golonk.EMPLOYEE where pensja between 5000 and 7000;
+select * from io_golonk.CLIENT where SHORT_NAME like "%eco%" and IS_COMPANY = 1;
+
+# zadanie 3
+select * from io_golonk.ORDER where ORDER_DATE like "%-06-%" or ORDER_DATE like "%-07-%";
+# drugi sposob z funkcja MONTH
+select * from io_golonk.CLIENT where TAX_IDENTIFIER is not null order by SHORT_NAME asc;
+select * from io_golonk.EMPLOYEE order by BIRTH_DATE limit 5;
+
+# zadanie 4
