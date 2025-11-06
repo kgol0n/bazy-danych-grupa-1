@@ -18,3 +18,10 @@ select * from io_golonk.CLIENT where TAX_IDENTIFIER is not null order by SHORT_N
 select * from io_golonk.EMPLOYEE order by BIRTH_DATE limit 5;
 
 # zadanie 4
+select concat (FIRST_NAME, ' - ', LAST_NAME) as imie_nazwisko from EMPLOYEE where LAST_NAME like "Ko%";
+select LAST_NAME, pensja from EMPLOYEE where DATE_OF_EMPLOYMENT between date("2010-01-01") and date("2014-12-31");
+
+# zadanie 5
+select pensja * 0.75 as pensja_netto, pensja * 0.25 as pensja_podatek from EMPLOYEE;
+select * from CLIENT where TAX_IDENTIFIER is null;
+select SHORT_NAME from CLIENT where FULL_NAME like "K%" or FULL_NAME like "%ski" order by SHORT_NAME desc;
