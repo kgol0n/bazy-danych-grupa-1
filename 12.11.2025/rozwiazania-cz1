@@ -10,3 +10,4 @@ select * from towar where nazwa_towaru not like 'A%' order by cena_zakupu desc l
 # 10 nie mozliwe do zrobienia
 create table towary_powyzej_100 as select * from __firma_zti.towar where cena_zakupu > 100;
 create table pracownik_50_plus as select * from __firma_zti.pracownik where data_urodzenia <= subdate(current_date(), interval 50 year);
+# rozwiazanie z like: 
