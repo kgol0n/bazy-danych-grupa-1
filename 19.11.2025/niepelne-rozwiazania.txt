@@ -1,0 +1,32 @@
+ŁĄCZENIE TABEL
+inner join - wyświetla dane, które mają dopasowanie w obu tabelach (ł. symetryczne)
+left join - pobiera dane z lewej tabeli i dopasowane z prawej (lewa cała, prawa dopasowanie)
+right join - pobiera dane z prawej tabeli i dopasowane z lewej (prawa cała, lewa dopasowanie)
+z reguły left join
+
+full join - pobiera wszystkie dane z tabel
+cross join - iloczyn kartezjański (bardzo rzadko używany)
+self join - łączy tabele same ze sobą (inner join)
+
+
+Zadanie 1)
+1. select EMPLOYEE_NAME, FIRST_NAME, LAST_NAME, round(avg(pensja), 2) from EMPLOYEE group by EMPLOYEE_NAME;
+2. select distinct JOB_POSITION_ID as stanowisko, round(avg(pensja), 2) as srednia_pensja, count(JOB_POSITION_ID) as ilosc_pracownikow from EMPLOYEE group by JOB_POSITION_ID;
+3. select distinct DEPARTMENT_ID as departament, 2025 - round(avg(YEAR(birth_date)), 0) as sredni_wiek from EMPLOYEE group by DEPARTMENT_ID;
+
+Zadanie 2)
+1. select distinct DEPARTMENT_ID as departament, sum(pensja) as suma from EMPLOYEE group by department_id order by suma desc;
+2. select distinct JOB_POSITION_ID as stanowisko, round(avg(pensja), 2) as srednia_pensja from EMPLOYEE group by JOB_POSITION_ID having count(JOB_POSITION_ID) >= 3 and avg(pensja) > 3000;
+# nie za bardzo rozumiem 3. select distinct DEPARTMENT_ID as departament, pensja from EMPLOYEE group by pensja having count(DEPARTMENT_ID) > 4;
+
+Zadanie 3)
+1. create table DEPARTMENT as select * from company_2025.DEPARTMENT;
+create table JOB_POSITION as select * from company_2025.JOB_POSITION;
+2. # select potrzebny do wykonania zadania
+select distinct DEPARTMENT_ID, count(DEPARTMENT_ID) as ilosc_pracownikow from company_2025.EMPLOYEE group by DEPARTMENT_ID;
+
+create table ilosc_pracownikow_w_departament as select distinct DEPARTMENT_ID, count(DEPARTMENT_ID) as ilosc_pracownikow from company_2025.EMPLOYEE group by DEPARTMENT_ID;
+
+3. 
+
+Zadanie 4) 
