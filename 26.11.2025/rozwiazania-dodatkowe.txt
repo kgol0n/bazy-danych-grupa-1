@@ -1,0 +1,61 @@
+use __firma_zti;
+
+-- zadanie 1
+SELECT imie, nazwisko, dzial.nazwa nazwa_dzialu FROM pracownik LEFT JOIN dzial ON pracownik.dzial = dzial.id_dzialu;
+
+-- zadanie 2
+SELECT nazwa_towaru nazwa, kategoria.nazwa_kategori kategoria, stan_magazynowy.ilosc ilosc FROM towar LEFT JOIN kategoria ON towar.kategoria = kategoria.id_kategori LEFT JOIN stan_magazynowy ON towar.id_towaru = stan_magazynowy.towar;
+
+-- zadanie 3 (wszystkie anulowane zamowienia) (łączenie tabeli zamowienie i status_zamowienia)
+SELECT * FROM zamowienie LEFT JOIN status_zamowienia ON zamowienie.status_zamowienia = status_zamowienia.id_statusu_zamowienia WHERE nazwa_statusu_zamowienia = 'anulowane';
+
+-- zadanie 4 (wszyscy klienci, adr podst Olsztyn) (łączenie tabeli klient z tabelą adres_klienta i typ_adresu) ???
+SELECT * 
+FROM klient 
+	LEFT JOIN adres_klienta 
+	ON klient.id_klienta = adres_klienta.klient 
+	LEFT JOIN typ_adresu 
+	ON adres_klienta.typ_adresu = typ_adresu.id_typu 
+WHERE adres.;
+
+-- zadanie 5 (wszyskie nazwy jednostek miary, które są nie użyte w stan_magazynowy) (do tabeli jednostka miary dodajemy stan_magazynowy) ???
+-- wszystkie 
+SELECT nazwa FROM jednostka_miary LEFT JOIN stan_magazynowy ON jednostka_miary.id_jednostki = stan_magazynowy.jm;
+
+-- zadanie 6 (nr zamowienia, nazwa towaru, ilosc, cena gdzie rok zamowienia to 2018)
+SELECT numer_zamowienia, towar.nazwa_towaru, pozycja_zamowienia.ilosc, pozycja_zamowienia.cena FROM zamowienie LEFT JOIN pozycja_zamowienia ON zamowienie.id_zamowienia = pozycja_zamowienia.zamowienie LEFT JOIN towar ON pozycja_zamowienia.towar = towar.id_towaru WHERE YEAR(zamowienie.data_zamowienia) LIKE '2018';
+
+-- zadanie 7 (utworzenie tabeli, nazwa_towaru, cena_zakupu, kategoria(nazwa), ilosc, jednostka miary(nazwa))
+nazwa towaru - towar.nazwa_towaru
+cena zakupu - towar.cena_zakupu
+nazwa kat - kategoria.nazwa_kategorii
+ilosc - stan_magazynowy.ilosc
+nazwa jm - jednostka_miary.nazwa
+
+-- SAM SELECT
+SELECT towar.nazwa_towaru, towar.cena_zakupu, kategoria.nazwa_kategori, stan_magazynowy.ilosc, jednostka_miary.nazwa
+FROM towar
+LEFT JOIN kategoria
+ON towar.kategoria = kategoria.id_kategori
+LEFT JOIN stan_magazynowy
+ON towar.id_towaru = stan_magazynowy.towar
+LEFT JOIN jednostka_miary
+ON stan_magazynowy.jm = jednostka_miary.id_jednostki;
+
+-- Utworzenie tabeli
+create table io_golonk.towary_full_info as SELECT towar.nazwa_towaru, towar.cena_zakupu, kategoria.nazwa_kategori, stan_magazynowy.ilosc, jednostka_miary.nazwa
+FROM towar
+LEFT JOIN kategoria
+ON towar.kategoria = kategoria.id_kategori
+LEFT JOIN stan_magazynowy
+ON towar.id_towaru = stan_magazynowy.towar
+LEFT JOIN jednostka_miary
+ON stan_magazynowy.jm = jednostka_miary.id_jednostki;
+
+-- zadanie 8 (pozycje zamowien dla 5 najstarszych zamowien)
+select * from pozycja_zamowienia LEFT JOIN zamowienie ON pozycja_zamowienia.zamowienie = zamowienie.id_zamowienia order by zamowienie.data_zamowienia limit 5;
+-- zadanie 9
+select * from zamowienie left join status_zamowienia on zamowienie.status_zamowienia = status_zamowienia = id_statusu_zamowienia where status_zamowienia.nazwa_statusu_zamowienia != 'zrealizowane'; (coś nie tak)
+
+-- zadanie 10 (adresy, gdzie kod pocztowy jest niepoprawny) (pozycja 75, 218)
+select id_adresu, ulica, kod, miejscowosc from adres_klienta WHERE POSITION('-' in kod) != 3;
