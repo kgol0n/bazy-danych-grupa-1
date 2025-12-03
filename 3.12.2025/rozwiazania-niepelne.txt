@@ -1,0 +1,61 @@
+połączyć trzy tabele
+
+powołanie się na tabele, które nie są w mojej bazie
+skopiować tabele do swojej bazy
+
+(odwołać się do docsów MySQL'a)
+use company_2025; (potem skopiuje)
+
+
+--zadanie 1
+
+--1.1 (wszystkie ID clientów, którego nie ma w tabeli ORDER) (?)
+select * from CLIENT left join company_2025.ORDER on CLIENT.CLIENT_ID = company_2025.ORDER.CLIENT_ID WHERE company_2025.ORDER.CLIENT_ID is null;
+
+--1.2 right join - wszystko z prawej, dopelnienie z lewej
+select distinct UNIT_NAME from UNIT_OF_MEASUREMENT u right join INVENTORY i on u.UNIT_ID = i.UNIT_ID; - wszystkie wykorzystane (podzapytanie)
+niewykorzystane - select UNIT_NAME from UNIT_OF_MEASUREMENT u where u.UNIT_NAME not in (select distinct UNIT_NAME from UNIT_OF_MEASUREMENT u right join INVENTORY i on u.UNIT_ID = i.UNIT_ID);
+
+--1.3 (nazwa i wyliczona różnica) cena sprzedazy jest w ORDER_POSITION;
+
+do tabeli PRODUCT dołączyć ORDER_POSITION (nazwa, cena zakupu, cena sprzedazy)
+select PRODUCT_NAME, PURCHASE_PRICE, o.SELL_PRICE from PRODUCT p INNER JOIN ORDER_POSITION o on p.PRODUCT_ID = o.PRODUCT_ID;
+
+
+select PRODUCT_NAME, PURCHASE_PRICE, o.SELL_PRICE, AVG(o.SELL_PRICE - PURCHASE_PRICE) from PRODUCT p INNER JOIN ORDER_POSITION o on p.PRODUCT_ID = o.PRODUCT_ID; # group by nie chce działać, do poprawy
+
+
+
+--zadanie 2
+
+--2.1 nazwy departamentow, gdzie pracownicy wystawili zamowienia (podzapytanie)
+
+-- id departamentow pracownikow, ktorzy wystawili zamowienia
+select distinct DEPARTMENT_ID from EMPLOYEE e left join company_2025.ORDER o on e.EMPLOYEE_NAME = o.EMPLOYEE_ID;
+
+--glowne zapytanie 
+select DEPARTMENT_NAME from DEPARTMENT d left join (select distinct DEPARTMENT_ID from EMPLOYEE e left join company_2025.ORDER o on e.EMPLOYEE_NAME = o.EMPLOYEE_ID;) a on d.DEPARTMENT_ID = a.DEPARTMENT_ID; (do zrobienia)
+
+--zadanie 3
+--3.1
+select concat(PRODUCT_NAME, ' (', DESCRIPTION, ')') from PRODUCT;
+
+--3.2
+-- CONCAT_WS SELECT CONCAT_WS('-', 'John', 'Doe', '123 Main St', NULL, 'Anytown'); -> John-Doe-123 Main St--Anytown
+
+select concat_ws(', ', PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, PURCHASE_PRICE, DESCRIPTION) from PRODUCT;
+
+--3.3 (to na potem)
+--3.4
+
+--zadanie 4
+if(company_2025.ORDER.ORDER_STATUS in (3,5,7), 'Zakonczone', 'Inny');
+select ORDER_ID,  from company_2025.ORDER o if(company_2025.ORDER.ORDER_STATUS in (3,5,7), a = 'Zakonczone', a = 'Inny');
+
+with moje_dane (id, kolejna_kolumna) as (select company_2025.ORDER, )
+
+--zadanie 5
+--5.1
+select CITY miasto, substr(POSTAL_CODE,1,2) dwie_pierwsze FROM CLIENT_ADDRESS;
+
+--5.2
