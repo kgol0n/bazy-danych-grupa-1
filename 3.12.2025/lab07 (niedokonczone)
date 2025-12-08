@@ -6,20 +6,59 @@ select UNIT_NAME from UNIT_OF_MEASUREMENT u where u.UNIT_NAME not in (select dis
 
 1.3
 select p.PRODUCT_NAME, AVG(op.SELL_PRICE - p.PURCHASE_PRICE) srednia from PRODUCT p left join ORDER_POSITION op on p.PRODUCT_ID = op.PRODUCT_ID group by p.PRODUCT_NAME order by srednia desc;
-
-
+--------------------------------------------------------------------------------------------
 2.1
 select distinct d.DEPARTMENT_NAME from EMPLOYEE e left join DEPARTMENT d on e.DEPARTMENT_ID = d.DEPARTMENT_ID left join company_2025.ORDER o on e.EMPLOYEE_NAME = o.EMPLOYEE_ID;
 
 2.2
 select d.DEPARTMENT_NAME, SUM(op.AMOUNT * op.SELL_PRICE) wartosc from ORDER_POSITION op left join company_2025.ORDER o on op.ORDER_ID = o.ORDER_ID left join EMPLOYEE e on o.EMPLOYEE_ID = e.EMPLOYEE_NAME left join DEPARTMENT d on e.DEPARTMENT_ID = d.DEPARTMENT_ID group by d.DEPARTMENT_NAME;
-
-
+--------------------------------------------------------------------------------------------
 3.1
 select concat(PRODUCT_NAME, ' (', DESCRIPTION, ')') from PRODUCT;
 
 3.2
 select concat_ws(', ', PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, PURCHASE_PRICE, DESCRIPTION) from PRODUCT;
 
+3.3
+select d.DEPARTMENT_NAME, GROUP_CONCAT(CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) SEPARATOR ', ') Lista_pracownikow from DEPARTMENT d left join EMPLOYEE e on d.DEPARTMENT_ID = e.DEPARTMENT_ID group by d.DEPARTMENT_NAME;
+
+3.4
+SELECT
+    c.CATEGORY_NAME kategoria,
+    GROUP_CONCAT(p.PRODUCT_NAME SEPARATOR ', ')
+FROM PRODUCT p
+LEFT JOIN
+    CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID
+WHERE p.PRODUCT_ID NOT IN (SELECT PRODUCT_ID FROM ORDER_POSITION)
+GROUP BY
+    c.CATEGORY_NAME;
+--------------------------------------------------------------------------------------------
+4.1
+SELECT
+    o.ORDER_ID,
+    IF(o.ORDER_STATUS IN (3,4,7,10), 'Zakonczone', 'Inny') as status
+FROM `ORDER` o;
+
+4.2
+SELECT
+    p.PRODUCT_NAME,
+    CASE
+        WHEN i.AMOUNT = 0 THEN "BRAK"
+        WHEN (i.AMOUNT IS NULL) THEN "BRAK"
+        WHEN (i.AMOUNT BETWEEN 1 AND 9) THEN "Mala ilosc"
+        WHEN (i.AMOUNT BETWEEN 10 AND 30) THEN "Srednia ilosc"
+        WHEN (i.AMOUNT > 30) THEN "Duza ilosc"
+    END as Stan
+FROM PRODUCT p
+LEFT JOIN INVENTORY i
+ON  p.PRODUCT_ID = i.PRODUCT_ID
+;
+
+4.3
+SELECT
+    IFNULL(c.TAX_IDENTIFIER, "Klient indywidualny") AS Identyfikator_podatkowy
+FROM CLIENT c
+;
+--------------------------------------------------------------------------------------------
 5.1
 select CITY miasto, substr(POSTAL_CODE,1,2) dwie_pierwsze FROM CLIENT_ADDRESS;
