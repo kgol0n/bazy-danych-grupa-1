@@ -12,6 +12,16 @@ select distinct d.DEPARTMENT_NAME from EMPLOYEE e left join DEPARTMENT d on e.DE
 
 2.2
 select d.DEPARTMENT_NAME, SUM(op.AMOUNT * op.SELL_PRICE) wartosc from ORDER_POSITION op left join company_2025.ORDER o on op.ORDER_ID = o.ORDER_ID left join EMPLOYEE e on o.EMPLOYEE_ID = e.EMPLOYEE_NAME left join DEPARTMENT d on e.DEPARTMENT_ID = d.DEPARTMENT_ID group by d.DEPARTMENT_NAME;
+
+2.3 (bez dołączenia do tabeli z 2.2, suma zamówień dla każdego statusu)
+select os.STATUS_NAME,
+       SUM(op.AMOUNT * op.SELL_PRICE) Wartosc
+FROM ORDER_STATUS os
+LEFT JOIN `ORDER` o
+ON os.STATUS_ID = o.ORDER_STATUS
+LEFT JOIN ORDER_POSITION op
+ON o.ORDER_ID = op.ORDER_ID
+GROUP BY os.STATUS_NAME;
 --------------------------------------------------------------------------------------------
 3.1
 select concat(PRODUCT_NAME, ' (', DESCRIPTION, ')') from PRODUCT;
