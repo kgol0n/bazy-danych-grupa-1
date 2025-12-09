@@ -72,3 +72,10 @@ FROM CLIENT c
 --------------------------------------------------------------------------------------------
 5.1
 select CITY miasto, substr(POSTAL_CODE,1,2) dwie_pierwsze FROM CLIENT_ADDRESS;
+
+5.3
+SELECT REGEXP_REPLACE(
+               REPLACE(REPLACE(STREET, 'ul.', ''), 'al. ', ''),
+               '[^a-zA-Z ]', '')
+AS Nazwy_Ulic
+from CLIENT_ADDRESS;
