@@ -73,6 +73,12 @@ FROM CLIENT c
 5.1
 select CITY miasto, substr(POSTAL_CODE,1,2) dwie_pierwsze FROM CLIENT_ADDRESS;
 
+5.2
+select CITY,
+    GROUP_CONCAT(DISTINCT SUBSTR(POSTAL_CODE, 1, 2) SEPARATOR ', ') as 'Unikalne dwa pierwsze znaki'
+FROM CLIENT_ADDRESS
+GROUP BY CITY;
+
 5.3
 SELECT REGEXP_REPLACE(
                REPLACE(REPLACE(STREET, 'ul.', ''), 'al. ', ''),
