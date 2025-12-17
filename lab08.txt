@@ -1,0 +1,121 @@
+Zadanie 1.1
+nazwa klienta (CLIENT.FULL_NAME)
+nazwa ulicy klienta (CLIENT_ADDRESS.STREET)
+liczba znakow ulicy
+pierwsze 5 znakow nazwy ulicy
+
+select c.FULL_NAME, ca.STREET, LENGTH(ca.STREET) dlugosc, REGEXP_REPLACE(SUBSTR(ca.STREET, 5), '[0-9]+', '') piec_znakow
+FROM CLIENT c
+LEFT JOIN CLIENT_ADDRESS ca 
+ON c.CLIENT_ID = ca.CLIENT_ID;
+
+Zadanie 1.2
+Skrocona nazwa kliena (CLIENT.SHORT_NAME)
+nazwa typu adresu (ADDRESS_TYPE.ADDRESS_TYPE_NAME)
+
+select c.SHORT_NAME, at.ADDRESS_TYPE_NAME
+FROM CLIENT c
+LEFT JOIN CLIENT_ADDRESS ca
+on c.CLIENT_ID = ca.CLIENT_ID
+LEFT JOIN ADDRESS_TYPE at
+on ca.ADDRESS_TYPE = at.ADDRESS_TYPE_ID;
+
+
+Zadanie 1.3
+Nazwa produktu (PRODUCT.PRODUCT_NAME)
+Nazwa kategorii (CATEGORY.CATEGORY_NAME)
+Pierwsze trzy znaki nazwy produktu
+
+select p.PRODUCT_NAME, c.CATEGORY_NAME, SUBSTR(p.PRODUCT_NAME, 1, 3) trzy_znaki
+FROM PRODUCT p
+LEFT JOIN CATEGORY c
+ON p.CATEGORY_ID = c.CATEGORY_ID;
+
+Zadanie 1.4
+Nazwa produktu (p.PRODUCT_NAME)
+Opis dla sprzedanego (jeżeli w tabeli `ORDER` dla id produktu status zamowienia = 3)
+
+select p.PRODUCT_NAME, IF(o.ORDER_STATUS = 3, p.DESCRIPTION, NULL) opis dla sprzedanych
+FROM PRODUCT p
+LEFT JOIN ORDER_POSITION op 
+ON p.PRODUCT_ID = op.PRODUCT_ID
+LEFT JOIN `ORDER` o 
+ON op.ORDER_ID = o.ORDER_ID;
+
+Zadanie 2.1
+nazwa klienta (CLIENT.FULL_NAME)
+numer zamowienia
+data zamowienia
+dni, ktore uplynely od daty zamowienia
+
+
+select c.FULL_NAME, o.ORDER_NUMBER, o.ORDER_DATE, DATEDIFF(CURDATE(), o.ORDER_DATE) 'roznica (dni)'
+FROM CLIENT c
+LEFT JOIN `ORDER` o
+ON c.CLIENT_ID = o.CLIENT_ID;
+
+
+Zadanie 2.2
+dla zamowienia, ktore nie ma statusu zwrocone lub zamkniete (ID RÓŻNE OD 7 I 10)
+termin platnosci, ktory wynosi 14 dni od daty zamowienia DATE_ADD(o.ORDER_DATE, 14)
+
+
+select o.ORDER_NUMBER, ADDDATE(o.ORDER_DATE, 14) 'Data platnosci'
+FROM `ORDER` o
+WHERE ORDER_STATUS NOT IN (7,10);
+
+Zadanie 2.3
+imie pracownika (e.FIRST_NAME)
+nazwisko pracownika (e.LAST_NAME)
+data zatrudnienia  (e.DATE_OF_EMPLOYEMENT)
+dzien tygodnia z daty zatrudnienia
+nazwa dzialu (d.DEPARTMENT_NAME)
+
+select e.FIRST_NAME, e.LAST_NAME, e.DATE_OF_EMPLOYMENT, DAYOFWEEK(e.DATE_OF_EMPLOYMENT) nr_dnia_tyg, d.DEPARTMENT_NAME
+FROM EMPLOYEE e
+LEFT JOIN DEPARTMENT d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+Zadanie 2.4
+nazwa klienta (c.FULL_NAME)
+roznica
+
+select c.FULL_NAME, MIN(o.ORDER_DATE) najwczesniejsza, MAX(o.ORDER_DATE) najpozniejsza, DATEDIFF(MAX(o.ORDER_DATE), MIN(o.ORDER_DATE)) roznica
+FROM CLIENT c
+LEFT JOIN `ORDER` o
+ON c.CLIENT_ID = o.CLIENT_ID
+GROUP BY c.FULL_NAME;
+
+
+Zadanie 3.1
+skrocona nazwa klienta (c.SHORT_NAME)
+adresy oddzielona przecinkami, format adresu: STREET POSTAL_CODE CITY
+
+select c.SHORT_NAME, GROUP_CONCAT(ca.STREET, ' ', ca.POSTAL_CODE, ' ', ca.CITY SEPARATOR ', ') adresy
+FROM CLIENT c
+LEFT JOIN CLIENT_ADDRESS ca
+ON c.CLIENT_ID = ca.CLIENT_ID
+GROUP BY c.SHORT_NAME;
+
+
+Zadanie 3.2
+Miasto, unikalne dwuznakowe prefiksy kodow pocztowych
+
+select ca.CITY, GROUP_CONCAT(DISTINCT SUBSTR(ca.POSTAL_CODE, 1, 2) SEPARATOR ', ') prefixy
+FROM CLIENT_ADDRESS ca
+GROUP BY ca.CITY;
+
+Zadanie 3.3
+imie + nazwisko
+nazwa dzialu
+liczba dni od zatrudnienia
+
+select CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) imie_nazwisko, d.DEPARTMENT_NAME, DATEDIFF(CURDATE(), e.DATE_OF_EMPLOYMENT) dni_od_zat
+FROM EMPLOYEE e
+LEFT JOIN DEPARTMENT d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+
+Zadanie 3.4
+pelna nazwa klienta - 
+
