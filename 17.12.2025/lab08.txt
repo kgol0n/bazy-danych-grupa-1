@@ -1,0 +1,161 @@
+--zadanie 1.1
+select
+    c.FULL_NAME,
+    ca.STREET,
+    LENGTH (ca.STREET) dlugosc,
+    REGEXP_REPLACE (SUBSTR (ca.STREET, 5), '[0-9]+', '') piec_znakow
+FROM
+    CLIENT c
+    LEFT JOIN CLIENT_ADDRESS ca ON c.CLIENT_ID = ca.CLIENT_ID;
+
+--zadanie 1.2
+select
+    c.SHORT_NAME,
+    at.ADDRESS_TYPE_NAME
+FROM
+    CLIENT c
+    LEFT JOIN CLIENT_ADDRESS ca on c.CLIENT_ID = ca.CLIENT_ID
+    LEFT JOIN ADDRESS_TYPE at on ca.ADDRESS_TYPE = at.ADDRESS_TYPE_ID;
+
+--zadanie 1.3
+select
+    p.PRODUCT_NAME,
+    c.CATEGORY_NAME,
+    SUBSTR (p.PRODUCT_NAME, 1, 3) trzy_znaki
+FROM
+    PRODUCT p
+    LEFT JOIN CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID;
+
+--zadanie 1.4
+select
+    p.PRODUCT_NAME,
+    IF (o.ORDER_STATUS = 3, p.DESCRIPTION, NULL) opis dla sprzedanych
+FROM
+    PRODUCT p
+    LEFT JOIN ORDER_POSITION op ON p.PRODUCT_ID = op.PRODUCT_ID
+    LEFT JOIN `ORDER` o ON op.ORDER_ID = o.ORDER_ID;
+
+--zadanie 2.1
+select
+    c.FULL_NAME,
+    o.ORDER_NUMBER,
+    o.ORDER_DATE,
+    DATEDIFF (CURDATE (), o.ORDER_DATE) 'roznica (dni)'
+FROM
+    CLIENT c
+    LEFT JOIN `ORDER` o ON c.CLIENT_ID = o.CLIENT_ID;
+
+--zadanie 2.2
+select
+    o.ORDER_NUMBER,
+    ADDDATE (o.ORDER_DATE, 14) 'Data platnosci'
+FROM
+    `ORDER` o
+WHERE
+    ORDER_STATUS NOT IN (7, 10);
+
+--zadanie 2.3
+select
+    e.FIRST_NAME,
+    e.LAST_NAME,
+    e.DATE_OF_EMPLOYMENT,
+    DAYOFWEEK (e.DATE_OF_EMPLOYMENT) nr_dnia_tyg,
+    d.DEPARTMENT_NAME
+FROM
+    EMPLOYEE e
+    LEFT JOIN DEPARTMENT d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--zadanie 2.4
+select
+    c.FULL_NAME,
+    MIN(o.ORDER_DATE) najwczesniejsza,
+    MAX(o.ORDER_DATE) najpozniejsza,
+    DATEDIFF (MAX(o.ORDER_DATE), MIN(o.ORDER_DATE)) roznica
+FROM
+    CLIENT c
+    LEFT JOIN `ORDER` o ON c.CLIENT_ID = o.CLIENT_ID
+GROUP BY
+    c.FULL_NAME;
+
+--zadanie 3.1
+select
+    c.SHORT_NAME,
+    GROUP_CONCAT (
+        ca.STREET,
+        ' ',
+        ca.POSTAL_CODE,
+        ' ',
+        ca.CITY SEPARATOR ', '
+    ) adresy
+FROM
+    CLIENT c
+    LEFT JOIN CLIENT_ADDRESS ca ON c.CLIENT_ID = ca.CLIENT_ID
+GROUP BY
+    c.SHORT_NAME;
+
+--zadanie 3.2
+select
+    ca.CITY,
+    GROUP_CONCAT (
+        DISTINCT SUBSTR (ca.POSTAL_CODE, 1, 2) SEPARATOR ', '
+    ) prefixy
+FROM
+    CLIENT_ADDRESS ca
+GROUP BY
+    ca.CITY;
+
+--zadanie 3.3
+select
+    CONCAT (e.FIRST_NAME, ' ', e.LAST_NAME) imie_nazwisko,
+    d.DEPARTMENT_NAME,
+    DATEDIFF (CURDATE (), e.DATE_OF_EMPLOYMENT) dni_od_zat
+FROM
+    EMPLOYEE e
+    LEFT JOIN DEPARTMENT d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+--zadanie 3.4
+select
+    CONCAT (c.FULL_NAME, ' - ', c.SHORT_NAME) nazwa,
+    GROUP_CONCAT (SUBSTR (o.ORDER_NUMBER, 5, 7) SEPARATOR ', ') nr_zamowienia
+FROM
+    CLIENT c
+    LEFT JOIN `ORDER` o ON c.CLIENT_ID = o.CLIENT_ID
+GROUP BY
+    nazwa;
+
+--zadanie 3.5
+SELECT
+    CONCAT (
+        LOWER(SUBSTR (e.FIRST_NAME, 1, 3)),
+        UPPER(RIGHT (e.LAST_NAME, 4)),
+        LENGTH (e.FIRST_NAME) + LENGTH (e.BIRTH_DATE) -2
+    ) as haslo
+FROM
+    EMPLOYEE e;
+
+--zadanie 4.1
+select
+    DATE_FORMAT (o.ORDER_DATE, '%d-%m-%Y') 'd-m-y',
+    DATE_FORMAT (o.ORDER_DATE, '%Y-%V') 'y-nr tygodnia',
+    CONCAT (
+        DATE_FORMAT (o.ORDER_DATE, '%Y'),
+        '-',
+        DAYOFYEAR (o.ORDER_DATE)
+    ) 'y-dzien roku',
+    DATE_FORMAT (o.ORDER_DATE, '%M/%d/%Y') 'miesiac/d/y'
+from
+    `ORDER` o;
+
+--zadanie 4.2
+select
+    DATE_FORMAT (o.ORDER_DATE, '%V') data_nr_tyg,
+    SUM(op.AMOUNT * op.SELL_PRICE) wartosc
+from
+    `ORDER` o
+    LEFT JOIN ORDER_POSITION op ON o.ORDER_ID = op.ORDER_ID
+GROUP BY
+    data_nr_tyg
+ORDER BY
+    wartosc DESC
+LIMIT
+    1;
